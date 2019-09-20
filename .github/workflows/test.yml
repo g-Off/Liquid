@@ -9,5 +9,5 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: swift package test
-      run: swift package test
+    - name: swift test
+      run: swift test
