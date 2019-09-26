@@ -21,7 +21,7 @@ public final class Value: Equatable, Comparable {
 	
 	fileprivate var storage: Storage
 	
-	init() {
+	public init() {
 		self.storage = .nil
 	}
 	
@@ -29,41 +29,41 @@ public final class Value: Equatable, Comparable {
 		self.storage = storage
 	}
 	
-	convenience init(_ value: Bool) {
+	public convenience init(_ value: Bool) {
 		self.init(storage: .bool(value))
 	}
 	
-	convenience init(_ value: String) {
+	public convenience init(_ value: String) {
 		self.init(storage: .string(value))
 	}
 	
-	convenience init(_ value: Int) {
+	public convenience init(_ value: Int) {
 		self.init(storage: .int(value))
 	}
 	
-	convenience init(_ value: Double) {
+	public convenience init(_ value: Double) {
 		self.init(storage: .decimal(Decimal(value)))
 	}
 	
-	convenience init(_ value: Decimal) {
+	public convenience init(_ value: Decimal) {
 		self.init(storage: .decimal(value))
 	}
 	
-	convenience init(_ value: [Value]) {
+	public convenience init(_ value: [Value]) {
 		self.init(storage: .array(value))
 	}
 	
-	convenience init(_ value: [String: Value]) {
+	public convenience init(_ value: [String: Value]) {
 		self.init(storage: .dictionary(value))
 	}
 	
-	convenience init(_ value: Drop) {
+	public convenience init(_ value: Drop) {
 		self.init(storage: .drop(value))
 	}
 	
 	// MARK: -
 	
-	var isTruthy: Bool {
+	public var isTruthy: Bool {
 		switch storage {
 		case .nil, .bool(false):
 			return false
@@ -72,7 +72,7 @@ public final class Value: Equatable, Comparable {
 		}
 	}
 	
-	var size: Int {
+	public var size: Int {
 		switch storage {
 		case .array(let value):
 			return value.count
@@ -102,49 +102,49 @@ public final class Value: Equatable, Comparable {
 	
 	// MARK: - Type check conveniences
 	
-	var isNil: Bool {
+	public var isNil: Bool {
 		if case .nil = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isInteger: Bool {
+	public var isInteger: Bool {
 		if case .int = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isDecimal: Bool {
+	public var isDecimal: Bool {
 		if case .decimal = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isString: Bool {
+	public var isString: Bool {
 		if case .string = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isArray: Bool {
+	public var isArray: Bool {
 		if case .array = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isDictionary: Bool {
+	public var isDictionary: Bool {
 		if case .dictionary = storage {
 			return true
 		}
 		return false
 	}
 	
-	var isDrop: Bool {
+	public var isDrop: Bool {
 		if case .drop = storage {
 			return true
 		}
@@ -153,7 +153,7 @@ public final class Value: Equatable, Comparable {
 	
 	// MARK: - Type conversions
 	
-	func toInteger() -> Int {
+	public func toInteger() -> Int {
 		switch storage {
 		case .int(let value):
 			return value
@@ -164,7 +164,7 @@ public final class Value: Equatable, Comparable {
 		}
 	}
 	
-	func toDecimal() -> Decimal {
+	public func toDecimal() -> Decimal {
 		switch storage {
 		case .int(let value):
 			return Decimal(value)
@@ -175,21 +175,21 @@ public final class Value: Equatable, Comparable {
 		}
 	}
 	
-	func toArray() -> [Value] {
+	public func toArray() -> [Value] {
 		if case let .array(value) = storage {
 			return value
 		}
 		return []
 	}
 	
-	func toDictionary() -> [String: Value] {
+	public func toDictionary() -> [String: Value] {
 		if case let .dictionary(value) = storage {
 			return value
 		}
 		return [:]
 	}
 	
-	func toString() -> String {
+	public func toString() -> String {
 		switch storage {
 		case .bool(let value):
 			return "\(value ? "true" : "false")"
@@ -204,7 +204,7 @@ public final class Value: Equatable, Comparable {
 		}
 	}
 	
-	func toDrop() -> Drop? {
+	public func toDrop() -> Drop? {
 		if case let .drop(drop) = storage {
 			return drop
 		}
@@ -213,7 +213,7 @@ public final class Value: Equatable, Comparable {
 	
 	// MARK: -
 	
-	func liquidString(encoder: Encoder) -> String {
+	public func liquidString(encoder: Encoder) -> String {
 		switch storage {
 		case .bool(let value):
 			return "\(value ? "true" : "false")"
@@ -230,7 +230,7 @@ public final class Value: Equatable, Comparable {
 	
 	// MARK: - Array manipulation
 	
-	func push(value: Value) {
+	public func push(value: Value) {
 		guard case var .array(array) = storage else {
 			return
 		}
@@ -239,7 +239,7 @@ public final class Value: Equatable, Comparable {
 	}
 	
 	@discardableResult
-	func pop() -> Value? {
+	public func pop() -> Value? {
 		guard case var .array(array) = storage else {
 			return nil
 		}
@@ -250,7 +250,7 @@ public final class Value: Equatable, Comparable {
 	
 	// MARK: - Dictionary manipulation
 	
-	subscript(at: String) -> Value? {
+	public subscript(at: String) -> Value? {
 		get {
 			guard case let .dictionary(dictionary) = storage else {
 				return nil
