@@ -8,6 +8,7 @@
 import Foundation
 
 private let validNumberCharacters = CharacterSet.decimalDigits.union(CharacterSet(charactersIn: "-."))
+private let invalidNumberCharacters = CharacterSet.decimalDigits.union(CharacterSet(charactersIn: "-.")).inverted
 
 extension Scanner {
 	var liquid_currentIndex: String.Index {
@@ -64,8 +65,13 @@ extension Scanner {
 				self.liquid_currentIndex = currentLocation
 				return nil
 			}
+			let matchString = string[currentLocation..<liquid_currentIndex]
 			// Check to make sure there's a decimal place, we don't want to capture Integer values
-			guard string[currentLocation..<liquid_currentIndex].contains(".") else {
+			guard matchString.rangeOfCharacter(from: invalidNumberCharacters) == nil else {
+				self.liquid_currentIndex = currentLocation
+				return nil
+			}
+			guard matchString.contains(".") else {
 				self.liquid_currentIndex = currentLocation
 				return nil
 			}
