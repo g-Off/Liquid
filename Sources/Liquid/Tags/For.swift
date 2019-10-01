@@ -100,11 +100,14 @@ class For: Block, Tag {
 		let offsetValue = offset?.evaluate(context: context).toInteger()
 		let limitValue = limit?.evaluate(context: context).toInteger()
 		
-		let parent = context[RegisterKey(name)]?.toArray().last?.toDrop()
-		let loop = ForLoop(item: item, body: forBlock, variableName: variableName, startIndex: startIndex, endIndex: endIndex, reversed: reversed, offset: offsetValue, limit: limitValue, parent: parent)
-		context[RegisterKey(name), default: Value([])].push(value: Value(loop.drop))
+		var parents = context[RegisterKey(name)] as? [ForDrop] ?? []
+		let loop = ForLoop(item: item, body: forBlock, variableName: variableName, startIndex: startIndex, endIndex: endIndex, reversed: reversed, offset: offsetValue, limit: limitValue, parent: parents.last)
+		parents.append(loop.drop)
+		context[RegisterKey(name)] = parents
 		defer {
-			context[RegisterKey(name)]?.pop()
+			var parents = context[RegisterKey(name)] as? [ForDrop]
+			parents?.removeLast()
+			context[RegisterKey(name)] = parents
 		}
 		if loop.isEmpty {
 			return try elseBlock?.render(context: context) ?? []

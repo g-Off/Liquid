@@ -41,12 +41,12 @@ struct Cycle: Tag {
 	func render(context: Context) -> [String] {
 		let registerKey = RegisterKey(name)
 		let lookupKey = nameExpression?.evaluate(context: context).toString() ?? expressions.map { $0.description }.joined(separator: ", ")
-		var registration = context[registerKey]?.toDictionary() ?? [:]
-		let iteration = registration[lookupKey]?.toInteger() ?? 0
+		var registration = (context[registerKey] as? [String: Int]) ?? [:]
+		let iteration = registration[lookupKey] ?? 0
 		let result = expressions[iteration].evaluate(context: context).toString()
 		
-		registration[lookupKey] =  Value((iteration + 1) % expressions.count)
-		context[registerKey] = Value(registration)
+		registration[lookupKey] = (iteration + 1) % expressions.count
+		context[registerKey] = registration
 		
 		return [result]
 	}
