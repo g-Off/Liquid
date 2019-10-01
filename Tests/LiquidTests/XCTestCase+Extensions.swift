@@ -15,6 +15,6 @@ func XCTAssertTemplate(_ templateString: String, _ expression2: String, _ values
 		let result = try template.render(values: values)
 		XCTAssertEqual(result, expression2, message(), file: file, line: line)
 	} catch {
-		XCTFail(error.localizedDescription)
+		XCTFail(error.localizedDescription, file: file, line: line)
 	}
 }
