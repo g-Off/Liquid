@@ -45,7 +45,7 @@ public final class Context {
 	private var filters: [String: FilterFunc]
 	
 	// Registers are for internal data structure storage, like forloop's and cycles to store data
-	private var registers: [String: Value] = [:]
+	private var registers: [String: Any] = [:]
 	
 	public let environment: Environment
 	public let encoder: Encoder
@@ -94,7 +94,7 @@ public final class Context {
 		scope[name] = value
 	}
 	
-	subscript(key: RegisterKey) -> Value? {
+	subscript(key: RegisterKey) -> Any? {
 		get {
 			return registers[key.rawValue]
 		}
@@ -103,7 +103,7 @@ public final class Context {
 		}
 	}
 	
-	subscript(key: RegisterKey, default defaultValue: @autoclosure () -> Value) -> Value {
+	subscript(key: RegisterKey, default defaultValue: @autoclosure () -> Any) -> Any {
 		get {
 			return registers[key.rawValue] ?? defaultValue()
 		}
