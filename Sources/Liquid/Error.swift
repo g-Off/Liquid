@@ -1,5 +1,5 @@
 //
-//  SyntaxError.swift
+//  Error.swift
 //  
 //
 //  Created by Geoffrey Foster on 2019-09-02.
@@ -18,9 +18,8 @@ public enum SyntaxError: Error {
 public enum RuntimeError: Error {
 	case wrongType(String)
 	case unknownFilter(String)
-	
 	case invalidArgCount(expected: Int, received: Int, tag: String)
-	
+	case reason(String) // TODO: this is just a raw string explaining the failure
 	case unimplemented
 }
 
