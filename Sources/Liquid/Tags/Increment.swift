@@ -20,8 +20,9 @@ struct Increment: Tag {
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
 	func render(context: Context) throws -> [String] {
-		let value = (context[EnvironmentKey(variableName)]?.toInteger() ?? 0)
-		context[EnvironmentKey(variableName)] = Value(value + 1)
+		let key = Environment.Key(variableName)
+		let value = (context.environment[key]?.toInteger() ?? 0)
+		context.environment[key] = Value(value + 1)
 		return ["\(value)"]
 	}
 }
