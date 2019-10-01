@@ -20,11 +20,12 @@ public final class Template {
 	
 	/// Environments are persisted across each render of a template so we store them as part of the template itself.
 	/// The template then injects them during a render call and copies the values back upon completion.
-	private var environment: [String: Value] = [:]
+	private let environment: Environment
 	
-	public init(source: String, locale: Locale = .current) {
+	public init(source: String, locale: Locale = .current, environment: Environment = Environment()) {
 		self.source = source
 		self.locale = locale
+		self.environment = environment
 		
 		encoder.locale = locale
 		
@@ -60,12 +61,6 @@ public final class Template {
 	
 	public func render(values: [String: Value] = [:]) throws -> String {
 		let context = Context(values: values, environment: environment, filters: filters, encoder: encoder)
-		defer {
-			// Merge the contexts environment back into the templates
-			environment.merge(context.environment) { (lhs, rhs) -> Value in
-				return rhs
-			}
-		}
 		return try root.render(context: context).joined()
 	}
 	

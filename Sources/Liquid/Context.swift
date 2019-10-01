@@ -27,14 +27,6 @@ class Scope {
 	}
 }
 
-public struct EnvironmentKey: Hashable {
-	public let rawValue: String
-	
-	public init(_ rawValue: String) {
-		self.rawValue = rawValue
-	}
-}
-
 public struct RegisterKey: Hashable {
 	public let rawValue: String
 	
@@ -54,12 +46,11 @@ public final class Context {
 	
 	// Registers are for internal data structure storage, like forloop's and cycles to store data
 	private var registers: [String: Value] = [:]
-	 //Environments are for mutliples runs of the same template with data that is persisted across
-	private(set) var environment: [String: Value]
 	
+	public let environment: Environment
 	public let encoder: Encoder
 	
-	init(values: [String: Value] = [:], environment: [String: Value] = [:], filters: [String: FilterFunc] = [:], encoder: Encoder) {
+	init(values: [String: Value] = [:], environment: Environment = Environment(), filters: [String: FilterFunc] = [:], encoder: Encoder) {
 		self.scopes = [Scope(values: values)]
 		self.environment = environment
 		self.filters = filters
@@ -101,24 +92,6 @@ public final class Context {
 	func setValue(_ value: Value, named name: String) {
 		let scope = scopes.reversed().first { $0.mutable }!
 		scope[name] = value
-	}
-	
-	subscript(key: EnvironmentKey) -> Value? {
-		get {
-			return environment[key.rawValue]
-		}
-		set {
-			environment[key.rawValue] = newValue
-		}
-	}
-	
-	subscript(key: EnvironmentKey, default defaultValue: @autoclosure () -> Value) -> Value {
-		get {
-			return environment[key.rawValue] ?? defaultValue()
-		}
-		set {
-			environment[key.rawValue] = newValue
-		}
 	}
 	
 	subscript(key: RegisterKey) -> Value? {

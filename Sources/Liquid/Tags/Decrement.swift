@@ -20,8 +20,9 @@ struct Decrement: Tag {
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
 	func render(context: Context) throws -> [String] {
-		let value = (context[EnvironmentKey(variableName)]?.toInteger() ?? 0) - 1
-		context[EnvironmentKey(variableName)] = Value(value)
+		let key = Environment.Key(variableName)
+		let value = (context.environment[key]?.toInteger() ?? 0) - 1
+		context.environment[key] = Value(value)
 		return ["\(value)"]
 	}
 }
