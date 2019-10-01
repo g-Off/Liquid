@@ -8,7 +8,7 @@
 import Foundation
 
 final class Parser {
-	private let tokens: [Lexer.Token]
+	let tokens: [Lexer.Token]
 	private var index: Array<Lexer.Token>.Index
 	init(tokens: [Lexer.Token]) {
 		self.tokens = tokens
