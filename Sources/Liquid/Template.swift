@@ -62,6 +62,7 @@ public final class Template {
 		tags["decrement"] = Decrement.init
 		tags["for"] = For.init
 		tags["if"] = If.init
+		tags["include"] = Include.init
 		tags["increment"] = Increment.init
 		tags["unless"] = If.unless
 		
