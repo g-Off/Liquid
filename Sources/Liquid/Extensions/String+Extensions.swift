@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  String+Extensions.swift
 //  
 //
 //  Created by Geoffrey Foster on 2019-09-15.

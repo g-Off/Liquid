@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Scanner+Extensions.swift
 //  
 //
 //  Created by Geoffrey Foster on 2019-09-05.
