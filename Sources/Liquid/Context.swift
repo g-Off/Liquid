@@ -42,17 +42,21 @@ public final class Context {
 	}
 	
 	private var scopes: [Scope]
-	private var filters: [String: FilterFunc]
 	
 	// Registers are for internal data structure storage, like forloop's and cycles to store data
 	private var registers: [String: Any] = [:]
 	
+	public let filters: [String: FilterFunc]
+	public let tags: [String: TagBuilder]
 	public let environment: Environment
 	public let encoder: Encoder
+	public let fileSystem: FileSystem
 	
-	init(values: [String: Value] = [:], environment: Environment = Environment(), filters: [String: FilterFunc] = [:], encoder: Encoder) {
+	init(fileSystem: FileSystem, values: [String: Value] = [:], environment: Environment = Environment(), tags: [String: TagBuilder], filters: [String: FilterFunc] = [:], encoder: Encoder) {
+		self.fileSystem = fileSystem
 		self.scopes = [Scope(values: values)]
 		self.environment = environment
+		self.tags = tags
 		self.filters = filters
 		self.encoder = encoder
 	}

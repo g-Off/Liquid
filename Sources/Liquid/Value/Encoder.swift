@@ -132,6 +132,10 @@ public struct Encoder {
 	public var decimalEncodingStrategy: DecimalEncodingStrategy = .scaled(8)
 	public internal(set) var locale: Locale = .current
 	
+	public init() {
+		
+	}
+	
 	public func encode(_ input: Any?) throws -> Value {
 		guard let input = input else {
 			return Value()
