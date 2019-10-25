@@ -21,6 +21,21 @@ public final class Value: Equatable, Comparable {
 	
 	fileprivate var storage: Storage
 	
+	public var cVarArgValue: CVarArg {
+		switch self.storage {
+		case .bool(let raw):
+			return raw
+		case .string(let raw):
+			return raw
+		case .int(let raw):
+			return raw
+		case .decimal(let raw):
+			return "\(raw)"
+		default:
+			fatalError()
+		}
+	}
+	
 	public init() {
 		self.storage = .nil
 	}
