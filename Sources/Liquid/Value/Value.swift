@@ -344,7 +344,6 @@ extension Value.Storage: Hashable {
 	func hash(into hasher: inout Hasher) {
 		switch self {
 		case .nil:
-			print("nil here \(#file) \(#line)")
 			break
 		case .bool(let value):
 			hasher.combine(value)

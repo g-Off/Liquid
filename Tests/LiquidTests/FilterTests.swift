@@ -270,4 +270,19 @@ final class FilterTests: XCTestCase {
 		XCTAssertEqual(try Filters.dateFilter(value: Value(1152098955), args: [Value("%m/%d/%Y")], encoder: encoder), Value("07/05/2006"))
 		XCTAssertEqual(try Filters.dateFilter(value: Value("1152098955"), args: [Value("%m/%d/%Y")], encoder: encoder), Value("07/05/2006"))
 	}
+	
+	func testFilterArgs() {
+		let echoFilter: FilterFunc = { (value, args, encoder) -> Value in
+			let strArgs = args.reduce("", { "\($0), \($1.description)" })
+			return Value(value.toString() + " - " + strArgs)
+		}
+		
+		let filters = ["echo": echoFilter]
+		XCTAssertTemplate("{{ 'testing' | echo: 'Fox Mulder', 1961 }}", "testing - , string: <Fox Mulder>, int: <1961>", filters: filters)
+		XCTAssertTemplate("{{ 'testing' | echo: name: 'Fox Mulder', yob: 1961 }}", "testing - , tuple: <(\"name\", string: <Fox Mulder>)>, tuple: <(\"yob\", int: <1961>)>", filters: filters)
+		
+		let values: [String: Any] = ["name": "Dana Scully", "yob": 1964]
+		XCTAssertTemplate("{{ 'testing' | echo: name: name, yob: yob }}", "testing - , tuple: <(\"name\", string: <Dana Scully>)>, tuple: <(\"yob\", int: <1964>)>", values, filters: filters)
+		XCTAssertTemplate("{{ 'testing' | echo: name, yob }}", "testing - , string: <Dana Scully>, int: <1964>", values, filters: filters)
+	}
 }
