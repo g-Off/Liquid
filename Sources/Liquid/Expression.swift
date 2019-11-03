@@ -12,6 +12,8 @@ struct Expression: CustomStringConvertible {
 		switch kind {
 		case let .lookup(lookup):
 			return lookup.map { $0.description }.joined(separator: "/")
+		case .namedParam(let value):
+			return "\(value.0): \(value.1.description)"
 		case .variable(let key):
 			return key
 		case .filter(let filter):
@@ -31,6 +33,7 @@ struct Expression: CustomStringConvertible {
 	
 	indirect enum Kind {
 		case lookup([Expression])
+		case namedParam(key: String, expression: Expression)
 		case variable(key: String)
 		case filter(LookupFilter)
 		case value(Value)
@@ -63,6 +66,10 @@ struct Expression: CustomStringConvertible {
 		self.kind = .lookup(lookup)
 	}
 	
+	init(key: String, expression: Expression) {
+		self.kind = .namedParam(key: key, expression: expression)
+	}
+	
 	func evaluate(context: Context) -> Value {
 		return evaluate(context: context, data: nil)
 	}
@@ -75,6 +82,8 @@ struct Expression: CustomStringConvertible {
 			for expression in expressions.dropFirst() {
 				result = expression.evaluate(context: context, data: result)
 			}
+		case let .namedParam(key, expression):
+			result = Value((key, expression.evaluate(context: context, data: data)))
 		case let .variable(key):
 			if let data = data {
 				result = data.lookup(Value(key), encoder: context.encoder)

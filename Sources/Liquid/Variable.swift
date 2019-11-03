@@ -36,8 +36,24 @@ struct Variable {
 	
 	private func parseFilterArgs(_ parser: Parser) -> [Expression] {
 		var args: [Expression] = []
-		
+
 		while !parser.look(.endOfString) {
+			// Assuming all args are named parameters
+			if parser.look(.id) && parser.look(.colon, 1) {
+				guard let key = parser.consume(.id) else { fatalError("id should exist") }
+				
+				parser.consume(.colon)
+				let expression = Expression.parse(parser)
+				args.append(Expression(key: key, expression: expression))
+				
+				if !parser.look(.comma) {
+					break
+				}
+				parser.consume(.comma)
+				continue
+			}
+			
+			// Assuming all args are ordered parameters
 			args.append(Expression.parse(parser))
 			if !parser.look(.comma) {
 				break
