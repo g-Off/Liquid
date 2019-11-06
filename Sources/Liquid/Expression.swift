@@ -99,11 +99,11 @@ struct Expression: CustomStringConvertible {
 				} else {
 					switch filter {
 					case .size:
-						result = try? Filters.sizeFilter(value: data, args: [], encoder: context.encoder)
+						result = try? Filters.sizeFilter(value: data, args: [], kwargs: [:], encoder: context.encoder)
 					case .first:
-						result = try? Filters.firstFilter(value: data, args: [], encoder: context.encoder)
+						result = try? Filters.firstFilter(value: data, args: [], kwargs: [:], encoder: context.encoder)
 					case .last:
-						result = try? Filters.lastFilter(value: data, args: [], encoder: context.encoder)
+						result = try? Filters.lastFilter(value: data, args: [], kwargs: [:], encoder: context.encoder)
 					}
 				}
 			} else {

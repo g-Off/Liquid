@@ -54,25 +54,25 @@ final class FilterTests: XCTestCase {
 	}
 	
 	func testEscape() {
-		XCTAssertEqual(try Filters.escapeFilter(value: Value("<strong>"), args: [], encoder: Encoder()).toString(), "&lt;strong&gt;")
+		XCTAssertEqual(try Filters.escapeFilter(value: Value("<strong>"), args: [], kwargs: [:], encoder: Encoder()).toString(), "&lt;strong&gt;")
 	}
 	
 	func testEscapeOnce() throws {
-		XCTAssertEqual(try Filters.escapeOnceFilter(value: Value("&lt;strong&gt;Hulk</strong>"), args: [], encoder: Encoder()).toString(), "&lt;strong&gt;Hulk&lt;/strong&gt;")
+		XCTAssertEqual(try Filters.escapeOnceFilter(value: Value("&lt;strong&gt;Hulk</strong>"), args: [], kwargs: [:], encoder: Encoder()).toString(), "&lt;strong&gt;Hulk&lt;/strong&gt;")
 	}
 	
 	func testUrlEncode() {
-		XCTAssertEqual(try Filters.urlEncodeFilter(value: Value("foo+1@example.com"), args: [], encoder: Encoder()).toString(), "foo%2B1%40example.com")
+		XCTAssertEqual(try Filters.urlEncodeFilter(value: Value("foo+1@example.com"), args: [], kwargs: [:], encoder: Encoder()).toString(), "foo%2B1%40example.com")
 	}
 	
 	func testUrlDecode() {
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo+bar"), args: [], encoder: Encoder()).toString(), "foo bar")
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo%20bar"), args: [], encoder: Encoder()).toString(), "foo bar")
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo%2B1%40example.com"), args: [], encoder: Encoder()).toString(), "foo+1@example.com")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo+bar"), args: [], kwargs: [:], encoder: Encoder()).toString(), "foo bar")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo%20bar"), args: [], kwargs: [:], encoder: Encoder()).toString(), "foo bar")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("foo%2B1%40example.com"), args: [], kwargs: [:], encoder: Encoder()).toString(), "foo+1@example.com")
 		
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%20"), args: [], encoder: Encoder()).toString(), " ")
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%2"), args: [], encoder: Encoder()).toString(), "%2")
-		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%"), args: [], encoder: Encoder()).toString(), "%")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%20"), args: [], kwargs: [:], encoder: Encoder()).toString(), " ")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%2"), args: [], kwargs: [:], encoder: Encoder()).toString(), "%2")
+		XCTAssertEqual(try Filters.urlDecodeFilter(value: Value("%"), args: [], kwargs: [:], encoder: Encoder()).toString(), "%")
 	}
 	
 	func testStripHtml() {
@@ -254,20 +254,57 @@ final class FilterTests: XCTestCase {
 		var encoder = Encoder()
 		encoder.locale = Locale(identifier: "en_US")
 
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-05-05T10:00:00Z"), args: [Value("%B")], encoder: encoder), Value("May"))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-06-05T10:00:00Z"), args: [Value("%B")], encoder: encoder), Value("June"))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value("%B")], encoder: encoder), Value("July"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-05-05T10:00:00Z"), args: [Value("%B")], kwargs: [:], encoder: encoder), Value("May"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-06-05T10:00:00Z"), args: [Value("%B")], kwargs: [:], encoder: encoder), Value("June"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value("%B")], kwargs: [:], encoder: encoder), Value("July"))
 		
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value("")], encoder: encoder), Value("7/5/06, 10:00:00 AM"))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value()], encoder: encoder), Value("7/5/06, 10:00:00 AM"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value("")], kwargs: [:], encoder: encoder), Value("7/5/06, 10:00:00 AM"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2006-07-05T10:00:00Z"), args: [Value()], kwargs: [:], encoder: encoder), Value("7/5/06, 10:00:00 AM"))
 		
 		let yearString = "\(Calendar.autoupdatingCurrent.component(.year, from: Date()))"
-		XCTAssertEqual(try Filters.dateFilter(value: Value("2004-07-16T01:00:00Z"), args: [Value("%m/%d/%Y")], encoder: encoder), Value("07/16/2004"))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("now"), args: [Value("%Y")], encoder: encoder), Value(yearString))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("today"), args: [Value("%Y")], encoder: encoder), Value(yearString))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("Today"), args: [Value("%Y")], encoder: encoder), Value(yearString))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("2004-07-16T01:00:00Z"), args: [Value("%m/%d/%Y")], kwargs: [:], encoder: encoder), Value("07/16/2004"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("now"), args: [Value("%Y")], kwargs: [:], encoder: encoder), Value(yearString))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("today"), args: [Value("%Y")], kwargs: [:], encoder: encoder), Value(yearString))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("Today"), args: [Value("%Y")], kwargs: [:], encoder: encoder), Value(yearString))
 		
-		XCTAssertEqual(try Filters.dateFilter(value: Value(1152098955), args: [Value("%m/%d/%Y")], encoder: encoder), Value("07/05/2006"))
-		XCTAssertEqual(try Filters.dateFilter(value: Value("1152098955"), args: [Value("%m/%d/%Y")], encoder: encoder), Value("07/05/2006"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value(1152098955), args: [Value("%m/%d/%Y")], kwargs: [:], encoder: encoder), Value("07/05/2006"))
+		XCTAssertEqual(try Filters.dateFilter(value: Value("1152098955"), args: [Value("%m/%d/%Y")], kwargs: [:], encoder: encoder), Value("07/05/2006"))
+	}
+	
+	func testFilterArgs() {
+		let echoFilter: FilterFunc = { (value, args, kwargs, encoder) -> Value in
+			let strArgs = args.map { "\($0)" }.sorted()
+			return Value(value.toString() + " - " + strArgs.description)
+		}
+		
+		let filters = ["echo": echoFilter]
+		XCTAssertTemplate("{{ 'testing' | echo: 'Fox Mulder', 1961 }}", "testing - [\"int: <1961>\", \"string: <Fox Mulder>\"]", filters: filters)
+		
+		let values: [String: Any] = ["name": "Dana Scully", "yob": 1964]
+		XCTAssertTemplate("{{ 'testing' | echo: name, yob }}", "testing - [\"int: <1964>\", \"string: <Dana Scully>\"]", values, filters: filters)
+	}
+	
+	func testFilterKWArgs() {
+		let echoFilter: FilterFunc = { (value, args, kwargs, encoder) -> Value in
+			let strKWArgs = kwargs.map { "\($0):\($1)" }.sorted()
+			return Value(value.toString() + " - " + strKWArgs.description)
+		}
+		
+		let filters = ["echo": echoFilter]
+		XCTAssertTemplate("{{ 'testing' | echo: name: 'Fox Mulder', yob: 1961 }}", "testing - [\"name:string: <Fox Mulder>\", \"yob:int: <1961>\"]", filters: filters)
+		
+		let values: [String: Any] = ["name": "Dana Scully", "yob": 1964]
+		XCTAssertTemplate("{{ 'testing' | echo: name: name, yob: yob }}", "testing - [\"name:string: <Dana Scully>\", \"yob:int: <1964>\"]", values, filters: filters)
+	}
+	
+	func testFilterOrderedAndNamedArgs() {
+		let echoFilter: FilterFunc = { (value, args, kwargs, encoder) -> Value in
+			let strArgs = args.map { "\($0)" }.sorted()
+			let strKWArgs = kwargs.map { "\($0):\($1)" }.sorted()
+			return Value(value.toString() + " - " + strArgs.description + strKWArgs.description)
+		}
+		
+		let filters = ["echo": echoFilter]
+		XCTAssertTemplate("{{ 'testing' | echo: 1, 2, 3, name: 'Fox Mulder', yob: 1961 }}", "testing - [\"int: <1>\", \"int: <2>\", \"int: <3>\"][\"name:string: <Fox Mulder>\", \"yob:int: <1961>\"]", filters: filters)
 	}
 }

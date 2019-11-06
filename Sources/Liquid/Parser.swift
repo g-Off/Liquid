@@ -19,9 +19,11 @@ final class Parser {
 		self.init(tokens: try Lexer.tokenize(string))
 	}
 	
-	func look(_ tokenKind: Lexer.Token.Kind) -> Bool {
+	func look(_ tokenKind: Lexer.Token.Kind, _ skip: Int = 0) -> Bool {
 		guard index != tokens.endIndex else { return false }
-		return tokens[index].kind == tokenKind
+		guard (index + skip) < tokens.endIndex else { return false }
+		
+		return tokens[index + skip].kind == tokenKind
 	}
 	
 	func consumeId(_ id: String) -> Bool {
