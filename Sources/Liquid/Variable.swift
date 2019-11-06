@@ -25,43 +25,38 @@ struct Variable {
 			guard let name = parser.consume(.id) else {
 				break // TODO: throw an error ?
 			}
-			var args: [Expression]?
+			
+			var args: ([Expression], [String: Expression])?
+			
 			if parser.consume(.colon) != nil {
 				args = parseFilterArgs(parser)
 			}
-			filters.append(Filter(name: name, args: args ?? []))
+			filters.append(Filter(name: name, args: args?.0 ?? [], kwargs: args?.1 ?? [:]))
 		}
 		parser.consume(.endOfString)
 	}
 	
-	private func parseFilterArgs(_ parser: Parser) -> [Expression] {
+	private func parseFilterArgs(_ parser: Parser) -> ([Expression], [String:Expression]) {
 		var args: [Expression] = []
+		var kwargs: [String: Expression] = [:]
 
 		while !parser.look(.endOfString) {
-			// Assuming all args are named parameters
 			if parser.look(.id) && parser.look(.colon, 1) {
-				guard let key = parser.consume(.id) else { fatalError("id should exist") }
+				let key = parser.consume(.id)!
 				
 				parser.consume(.colon)
-				let expression = Expression.parse(parser)
-				args.append(Expression(key: key, expression: expression))
-				
-				if !parser.look(.comma) {
-					break
-				}
-				parser.consume(.comma)
-				continue
+				kwargs[key] = Expression.parse(parser)
+			} else {
+				args.append(Expression.parse(parser))
 			}
-			
-			// Assuming all args are ordered parameters
-			args.append(Expression.parse(parser))
+		
 			if !parser.look(.comma) {
 				break
 			}
 			parser.consume(.comma)
 		}
 		
-		return args
+		return (args, kwargs)
 	}
 	
 	func evaluate(context: Context) throws -> Value {
@@ -70,7 +65,7 @@ struct Variable {
 			guard let filterFunc = context.filter(named: filter.name) else {
 				throw RuntimeError.unknownFilter(filter.name)
 			}
-			value = try filterFunc(value, filter.args.map { $0.evaluate(context: context) }, context.encoder)
+			value = try filterFunc(value, filter.args.map { $0.evaluate(context: context) }, filter.kwargs.mapValues { $0.evaluate(context: context) }, context.encoder)
 		}
 		return value
 	}

@@ -16,7 +16,6 @@ public final class Value: Equatable, Comparable {
 		case decimal(Decimal)
 		case array([Value])
 		case dictionary([String: Value])
-		case tuple((String, Value))
 		case drop(Drop)
 	}
 	
@@ -56,10 +55,6 @@ public final class Value: Equatable, Comparable {
 	
 	public convenience init(_ value: [String: Value]) {
 		self.init(storage: .dictionary(value))
-	}
-	
-	public convenience init(_ value: (String, Value)) {
-		self.init(storage: .tuple(value))
 	}
 	
 	public convenience init(_ value: Drop) {
@@ -149,13 +144,6 @@ public final class Value: Equatable, Comparable {
 		return false
 	}
 	
-	public var isTuple: Bool {
-		if case .tuple = storage {
-			return true
-		}
-		return false
-	}
-	
 	public var isDrop: Bool {
 		if case .drop = storage {
 			return true
@@ -231,8 +219,6 @@ public final class Value: Equatable, Comparable {
 			return "\(value ? "true" : "false")"
 		case .string(let value):
 			return value
-		case .tuple(let value):
-			return "\(value.0): \(value.1)"
 		case .int(let value):
 			return "\(value)"
 		case .decimal(let value):
@@ -330,8 +316,6 @@ extension Value.Storage: Equatable {
 			return l == r
 		case let (.dictionary(l), .dictionary(r)):
 			return l == r
-		case let (.tuple(l), .tuple(r)):
-			return l == r
 		case let (.drop(l), .drop(r)):
 			return l === r
 		default:
@@ -357,9 +341,6 @@ extension Value.Storage: Hashable {
 			hasher.combine(value)
 		case .dictionary(let value):
 			hasher.combine(value)
-		case .tuple(let value):
-			hasher.combine(value.0)
-			hasher.combine(value.1)
 		case .drop(let value):
 			hasher.combine(ObjectIdentifier(value))
 		}
@@ -448,8 +429,6 @@ extension Value.Storage: CustomStringConvertible, CustomDebugStringConvertible {
 			return "array: <\(value)>"
 		case let .dictionary(value):
 			return "dictionary: <\(value)>"
-		case let .tuple(value):
-			return "tuple: <\(value)>"
 		case let .drop(value):
 			return "drop: <\(value)>"
 		}
