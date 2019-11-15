@@ -47,17 +47,19 @@ public final class Context {
 	private var registers: [String: Any] = [:]
 	
 	public let filters: [String: FilterFunc]
+	public let translations: [String: String]?
 	public let tags: [String: TagBuilder]
 	public let environment: Environment
 	public let encoder: Encoder
 	public let fileSystem: FileSystem
 	
-	init(fileSystem: FileSystem, values: [String: Value] = [:], environment: Environment = Environment(), tags: [String: TagBuilder], filters: [String: FilterFunc] = [:], encoder: Encoder) {
+	init(fileSystem: FileSystem, values: [String: Value] = [:], environment: Environment = Environment(), tags: [String: TagBuilder], filters: [String: FilterFunc] = [:], translations: [String: String]? = nil, encoder: Encoder) {
 		self.fileSystem = fileSystem
 		self.scopes = [Scope(values: values)]
 		self.environment = environment
 		self.tags = tags
 		self.filters = filters
+		self.translations = translations
 		self.encoder = encoder
 	}
 	
