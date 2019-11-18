@@ -65,7 +65,7 @@ struct Variable {
 			guard let filterFunc = context.filter(named: filter.name) else {
 				throw RuntimeError.unknownFilter(filter.name)
 			}
-			value = try filterFunc(value, filter.args.map { $0.evaluate(context: context) }, filter.kwargs.mapValues { $0.evaluate(context: context) }, context.encoder)
+			value = try filterFunc(value, filter.args.map { $0.evaluate(context: context) }, filter.kwargs.mapValues { $0.evaluate(context: context) }, FilterContext(context: context))
 		}
 		return value
 	}

@@ -56,7 +56,7 @@ enum Filters {
 		template.registerFilter(name: "date", filter: dateFilter)
 	}
 	
-	static func appendFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func appendFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		var result = value.toString()
 		args.forEach {
 			result += $0.toString()
@@ -64,28 +64,28 @@ enum Filters {
 		return Value(result)
 	}
 	
-	static func prependFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func prependFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard let first = args.first, args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
 		return Value(first.toString() + value.toString())
 	}
 	
-	static func downcaseFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func downcaseFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().lowercased())
 	}
 	
-	static func upcaseFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func upcaseFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().uppercased())
 	}
 	
-	static func capitalizeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func capitalizeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -93,56 +93,56 @@ enum Filters {
 		return Value(string.prefix(1).capitalized + string.dropFirst())
 	}
 	
-	static func stripFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func stripFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().strip())
 	}
 	
-	static func rstripFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func rstripFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().rstrip())
 	}
 	
-	static func lstripFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func lstripFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().lstrip())
 	}
 	
-	static func stripNewlinesFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func stripNewlinesFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().replacingOccurrences(of: "\\s", with: "", options: [.regularExpression]))
 	}
 	
-	static func newlineToBRFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func newlineToBRFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().replacingOccurrences(of: "\n", with: "<br />\n"))
 	}
 	
-	static func escapeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func escapeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().htmlEscape(decimal: true, useNamedReferences: true))
 	}
 	
-	static func escapeOnceFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func escapeOnceFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().htmlUnescape().htmlEscape(decimal: true, useNamedReferences: true))
 	}
 	
-	static func urlEncodeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func urlEncodeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -152,7 +152,7 @@ enum Filters {
 		return Value(inputString.addingPercentEncoding(withAllowedCharacters: allowedCharset) ?? inputString)
 	}
 	
-	static func urlDecodeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func urlDecodeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -160,14 +160,14 @@ enum Filters {
 		return Value(string.removingPercentEncoding ?? string)
 	}
 	
-	static func stripHTMLFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func stripHTMLFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toString().replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression))
 	}
 	
-	static func truncateFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func truncateFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard !args.isEmpty, let firstArg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -179,7 +179,7 @@ enum Filters {
 		return Value(String((string[string.startIndex..<endIndex]) + suffix))
 	}
 	
-	static func truncateWordsFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func truncateWordsFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard !args.isEmpty, let firstArg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -206,7 +206,7 @@ enum Filters {
 		return Value(words.joined(separator: " ").appending(suffix))
 	}
 	
-	static func plusFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func plusFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -216,7 +216,7 @@ enum Filters {
 		return Value(value.toDecimal() + arg.toDecimal())
 	}
 	
-	static func minusFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func minusFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -226,7 +226,7 @@ enum Filters {
 		return Value(value.toDecimal() - arg.toDecimal())
 	}
 	
-	static func multipliedByFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func multipliedByFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -236,7 +236,7 @@ enum Filters {
 		return Value(value.toDecimal() * arg.toDecimal())
 	}
 	
-	static func dividedByFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func dividedByFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -246,7 +246,7 @@ enum Filters {
 		return Value(value.toDecimal() / arg.toDecimal())
 	}
 	
-	static func absFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func absFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -256,7 +256,7 @@ enum Filters {
 		return Value(abs(value.toDecimal()))
 	}
 	
-	static func ceilFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func ceilFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -266,7 +266,7 @@ enum Filters {
 		return Value(ceil(value.toDecimal().doubleValue))
 	}
 	
-	static func floorFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func floorFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -276,7 +276,7 @@ enum Filters {
 		return Value(floor(value.toDecimal().doubleValue))
 	}
 	
-	static func roundFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func roundFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count <= 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -285,7 +285,7 @@ enum Filters {
 		return Value(result)
 	}
 	
-	static func moduloFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func moduloFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -296,7 +296,7 @@ enum Filters {
 		return Value(value.toDecimal().doubleValue.truncatingRemainder(dividingBy: arg.toDecimal().doubleValue))
 	}
 	
-	static func splitFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func splitFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard let separator = args.first?.toString() else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -304,14 +304,14 @@ enum Filters {
 		return Value(components.map { Value($0) })
 	}
 	
-	static func joinFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func joinFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard let separator = args.first?.toString() else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toArray().map { $0.toString() }.joined(separator: separator))
 	}
 	
-	static func uniqueFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func uniqueFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
@@ -325,26 +325,26 @@ enum Filters {
 		return Value(unique)
 	}
 	
-	static func sizeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func sizeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.size)
 	}
 	
-	static func firstFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func firstFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return value.toArray().first ?? Value()
 	}
-	static func lastFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func lastFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return value.toArray().last ?? Value()
 	}
-	static func defaultFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func defaultFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1, let arg = args.first else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -354,7 +354,7 @@ enum Filters {
 			return value
 		}
 	}
-	static func replaceFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func replaceFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 2 else {
 			throw RuntimeError.invalidArgCount(expected: 2, received: args.count, tag: tagName())
 		}
@@ -363,7 +363,7 @@ enum Filters {
 		return Value(value.toString().replacingOccurrences(of: target, with: replacement))
 	}
 	
-	static func replaceFirstFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func replaceFirstFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 2 else {
 			throw RuntimeError.invalidArgCount(expected: 2, received: args.count, tag: tagName())
 		}
@@ -376,7 +376,7 @@ enum Filters {
 		return Value(string.replacingCharacters(in: range, with: replacement))
 	}
 	
-	static func removeFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func removeFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -384,7 +384,7 @@ enum Filters {
 		return Value(value.toString().replacingOccurrences(of: target, with: ""))
 	}
 	
-	static func removeFirstFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func removeFirstFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -396,7 +396,7 @@ enum Filters {
 		return Value(string.replacingCharacters(in: range, with: ""))
 	}
 	
-	static func sliceFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func sliceFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard !args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -424,31 +424,31 @@ enum Filters {
 		return Value(String(string[sliceStartIndex..<sliceEndIndex]))
 	}
 	
-	static func reverseFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func reverseFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toArray().reversed())
 	}
 	
-	static func compactFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func compactFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.isEmpty else {
 			throw RuntimeError.invalidArgCount(expected: 0, received: args.count, tag: tagName())
 		}
 		return Value(value.toArray().filter { !$0.isNil })
 	}
 	
-	static func mapFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func mapFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
 		
 		let property = args[0]
-		let results = value.toArray().map { $0.lookup(property, encoder: encoder) }
+		let results = value.toArray().map { $0.lookup(property, encoder: context.encoder) }
 		return Value(results)
 	}
 	
-	static func concatFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func concatFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
@@ -461,28 +461,28 @@ enum Filters {
 		return Value(array)
 	}
 	
-	static func sortFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func sortFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count <= 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
 		
 		if let property = args.first {
 			return Value(value.toArray().sorted(by: { (lhs, rhs) -> Bool in
-				return lhs.lookup(property, encoder: encoder) < rhs.lookup(property, encoder: encoder)
+				return lhs.lookup(property, encoder: context.encoder) < rhs.lookup(property, encoder: context.encoder)
 			}))
 		} else {
 			return Value(value.toArray().sorted())
 		}
 	}
 	
-	static func sortNaturalFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func sortNaturalFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count <= 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
 		
 		if let property = args.first {
 			return Value(value.toArray().sorted(by: { (lhs, rhs) -> Bool in
-				return lhs.lookup(property, encoder: encoder).toString().caseInsensitiveCompare(rhs.lookup(property, encoder: encoder).toString()) == .orderedAscending
+				return lhs.lookup(property, encoder: context.encoder).toString().caseInsensitiveCompare(rhs.lookup(property, encoder: context.encoder).toString()) == .orderedAscending
 			}))
 		} else {
 			return Value(value.toArray().sorted(by: { (lhs, rhs) -> Bool in
@@ -491,12 +491,12 @@ enum Filters {
 		}
 	}
 	
-	static func dateFilter(value: Value, args: [Value], kwargs: [String: Value], encoder: Encoder) throws -> Value {
+	static func dateFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
 		guard args.count == 1 else {
 			throw RuntimeError.invalidArgCount(expected: 1, received: args.count, tag: tagName())
 		}
 		
-		guard let date = convertValueToDate(value, encoder: encoder) else {
+		guard let date = convertValueToDate(value, context: context) else {
 			throw RuntimeError.wrongType("Could not convert to date")
 		}
 		
@@ -504,6 +504,7 @@ enum Filters {
 		let formatter: DateFormatter
 		if format.isEmpty {
 			formatter = DateFormatter()
+			formatter.locale = context.encoder.locale
 			formatter.dateStyle = .short
 			formatter.timeStyle = .medium
 		} else {
@@ -512,7 +513,7 @@ enum Filters {
 		return Value(formatter.string(from: date))
 	}
 	
-	private static func convertValueToDate(_ value: Value, encoder: Encoder) -> Date? {
+	private static func convertValueToDate(_ value: Value, context: FilterContext) -> Date? {
 		if value.isInteger {
 			return Date(timeIntervalSince1970: Double(value.toInteger()))
 		}
@@ -526,6 +527,6 @@ enum Filters {
 		if ["now", "today"].contains(string.lowercased()) {
 			return Date()
 		}
-		return encoder.dateEncodingStrategry.date(from: string)
+		return context.encoder.dateEncodingStrategry.date(from: string)
 	}
 }
