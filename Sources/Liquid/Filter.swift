@@ -19,4 +19,4 @@ struct Filter {
 	}
 }
 
-public typealias FilterFunc = (_ value: Value, _ args: [Value], _ kwargs: [String: Value], _ encoder: Encoder) throws -> Value
+public typealias FilterFunc = (_ value: Value, _ args: [Value], _ kwargs: [String: Value], _ context: FilterContext) throws -> Value
