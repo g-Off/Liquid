@@ -271,6 +271,21 @@ final class FilterTests: XCTestCase {
 		XCTAssertEqual(try Filters.dateFilter(value: Value("1152098955"), args: [Value("%m/%d/%Y")], kwargs: [:], context: FilterContext(encoder: encoder)), Value("07/05/2006"))
 	}
 	
+	func testTranslate() {
+		var encoder = Encoder()
+		encoder.locale = Locale(identifier: "en_US")
+		
+		let sampleTranslationDict: [String: String] = [
+			"x.files.main.characters": "%{argA} and %{argB}",
+			"x.files.title": "The X-Files",
+		]
+		
+		let filterContext = FilterContext(encoder: encoder, translations: sampleTranslationDict)
+		
+		XCTAssertEqual(try Filters.tFilter(value: Value("x.files.title"), args: [], kwargs: [:], context: filterContext), Value("The X-Files"))
+		XCTAssertEqual(try Filters.tFilter(value: Value("x.files.main.characters"), args: [], kwargs: ["argA": Value("Fox Mulder"), "argB": Value("Dana Scully")], context: filterContext), Value("Fox Mulder and Dana Scully"))
+	}
+	
 	func testFilterArgs() {
 		let echoFilter: FilterFunc = { (value, args, kwargs, encoder) -> Value in
 			let strArgs = args.map { "\($0)" }.sorted()

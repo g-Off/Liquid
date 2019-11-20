@@ -9,12 +9,14 @@ import Foundation
 
 public struct FilterContext {
 	public let encoder: Encoder
+	public let translations: [String: String]?
 	
 	init(context: Context) {
-		self.init(encoder: context.encoder)
+		self.init(encoder: context.encoder, translations: context.translations)
 	}
 	
-	init(encoder: Encoder) {
+	init(encoder: Encoder, translations: [String: String]? = nil) {
 		self.encoder = encoder
+		self.translations = translations
 	}
 }

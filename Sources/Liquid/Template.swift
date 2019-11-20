@@ -22,7 +22,9 @@ public final class Template {
 	
 	private let fileSystem: FileSystem
 	
-	public convenience init(sourceURL: URL, encoder: Encoder = Encoder(), environment: Environment = Environment()) throws {
+	private let translations: [String: String]?
+	
+	public convenience init(sourceURL: URL, encoder: Encoder = Encoder(), environment: Environment = Environment(), translations: [String: String]? = nil) throws {
 		let source = try String(contentsOf: sourceURL)
 		let fileSystem = LocalFileSystem(baseURL: sourceURL.deletingLastPathComponent())
 		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment)
@@ -43,13 +45,15 @@ public final class Template {
 		self.environment = context.environment
 		self.fileSystem = context.fileSystem
 		self.filters = context.filters
+		self.translations = context.translations
 		self.tags = context.tags
 	}
 	
-	private init(source: String, fileSystem: FileSystem, encoder: Encoder, environment: Environment) {
+	private init(source: String, fileSystem: FileSystem, encoder: Encoder, environment: Environment, translations: [String: String]? = nil) {
 		self.source = source
 		self.fileSystem = fileSystem
 		self.environment = environment
+		self.translations = translations
 		self.encoder = encoder
 		
 		tags["assign"] = Assign.init
@@ -88,7 +92,7 @@ public final class Template {
 	}
 	
 	public func render(values: [String: Value] = [:]) throws -> String {
-		let context = Context(fileSystem: fileSystem, values: values, environment: environment, tags: tags, filters: filters, encoder: encoder)
+		let context = Context(fileSystem: fileSystem, values: values, environment: environment, tags: tags, filters: filters, translations: translations, encoder: encoder)
 		return try render(context: context)
 	}
 	

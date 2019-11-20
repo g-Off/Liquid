@@ -54,6 +54,7 @@ enum Filters {
 		template.registerFilter(name: "sort", filter: sortFilter)
 		template.registerFilter(name: "sort_natural", filter: sortNaturalFilter)
 		template.registerFilter(name: "date", filter: dateFilter)
+		template.registerFilter(name: "t", filter: tFilter)
 	}
 	
 	static func appendFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
@@ -512,6 +513,25 @@ enum Filters {
 		}
 		return Value(formatter.string(from: date))
 	}
+
+	static func tFilter(value: Value, args: [Value], kwargs: [String: Value], context: FilterContext) throws -> Value {
+		guard let translations = context.translations else {
+			throw RuntimeError.reason("No translations dictionary available")
+		}
+		
+		guard let val = translations[value.toString()] else {
+			throw RuntimeError.reason("Invalid translation key")
+		}
+		
+		if kwargs.isEmpty && args.isEmpty {
+			return Value(val)
+		}
+		if !kwargs.isEmpty {
+			return Value(val.replaceWithValues(kwargs))
+		}
+		
+		throw RuntimeError.unimplemented
+	}
 	
 	private static func convertValueToDate(_ value: Value, context: FilterContext) -> Date? {
 		if value.isInteger {
@@ -528,5 +548,30 @@ enum Filters {
 			return Date()
 		}
 		return context.encoder.dateEncodingStrategry.date(from: string)
+	}
+}
+
+private extension String {
+	func replaceWithValues(_ values: [String: Value]) -> String {
+		let scanner = Scanner(string: self)
+		scanner.charactersToBeSkipped = CharacterSet.newlines
+		
+		var result: String = ""
+		var temp: NSString?
+		
+		while !scanner.isAtEnd {
+			scanner.scanUpTo("%{", into: &temp)
+			scanner.scanCharacters(from: CharacterSet.init(charactersIn: "%{"), into: nil)
+			
+			result = "\(result)\(temp ?? "")"
+			
+			scanner.scanUpTo("}", into: &temp)
+			scanner.scanCharacters(from: CharacterSet.init(charactersIn: "}"), into: nil)
+			
+			let resultValue = values[String(temp ?? "")]?.toString() ?? ""
+			result = "\(result)\(resultValue)"
+		}
+		
+		return result
 	}
 }
