@@ -27,7 +27,7 @@ public final class Template {
 	public convenience init(sourceURL: URL, encoder: Encoder = Encoder(), environment: Environment = Environment(), translations: [String: String]? = nil) throws {
 		let source = try String(contentsOf: sourceURL)
 		let fileSystem = LocalFileSystem(baseURL: sourceURL.deletingLastPathComponent())
-		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment)
+		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment, translations: translations)
 	}
 	
 	public convenience init(source: String, encoder: Encoder = Encoder(), environment: Environment = Environment(), fileSystem: FileSystem? = nil, translations: [String: String]? = nil) {
@@ -36,7 +36,7 @@ public final class Template {
 				throw RuntimeError.reason("Invalid filesystem")
 			}
 		}
-		self.init(source: source, fileSystem: fileSystem ?? ThrowingFileSystem(), encoder: encoder, environment: environment)
+		self.init(source: source, fileSystem: fileSystem ?? ThrowingFileSystem(), encoder: encoder, environment: environment, translations: translations)
 	}
 	
 	init(source: String, context: Context) {
