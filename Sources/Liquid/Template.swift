@@ -30,7 +30,7 @@ public final class Template {
 		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment)
 	}
 	
-	public convenience init(source: String, encoder: Encoder = Encoder(), environment: Environment = Environment(), fileSystem: FileSystem? = nil) {
+	public convenience init(source: String, encoder: Encoder = Encoder(), environment: Environment = Environment(), fileSystem: FileSystem? = nil, translations: [String: String]? = nil) {
 		struct ThrowingFileSystem: FileSystem {			
 			func read(path: String) throws -> String {
 				throw RuntimeError.reason("Invalid filesystem")
