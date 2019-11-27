@@ -16,7 +16,7 @@ struct Comment: Tag {
 		fatalError()
 	}
 	
-	func render(context: Context) -> [String] {
+	func render(context: RenderContext) -> [String] {
 		fatalError()
 	}
 }

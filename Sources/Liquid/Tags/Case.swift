@@ -66,7 +66,7 @@ class Case: Block, Tag {
 		conditions.append(CaseCondition(expressions: [], body: BlockBody(), isElse: true))
 	}
 
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		var output: [String] = []
 		let expressionValue = expression.evaluate(context: context)
 		try context.withScope {

@@ -12,7 +12,7 @@ func XCTAssertTemplate(_ templateString: String, _ expression2: String, _ values
 	let template = Template(source: templateString, fileSystem: fileSystem)
 	filters?.forEach({ template.registerFilter(name: $0, filter: $1)})
 	
-	XCTAssertNoThrow(try template.parse())
+	XCTAssertNoThrow(try template.parse(), message(), file: file, line: line)
 	do {
 		let result = try template.render(values: values)
 		XCTAssertEqual(result, expression2, message(), file: file, line: line)

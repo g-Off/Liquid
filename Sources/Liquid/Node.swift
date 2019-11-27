@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Node {
-	func render(context: Context) throws -> [String]
+	func render(context: RenderContext) throws -> [String]
 }
 
 struct VariableNode: Node {
@@ -18,7 +18,7 @@ struct VariableNode: Node {
 		self.variable = variable
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		return [try variable.evaluate(context: context).liquidString(encoder: context.encoder)]
 	}
 }
@@ -29,7 +29,7 @@ struct StringNode: Node {
 		self.rawValue = rawValue
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		return [rawValue]
 	}
 }

@@ -21,7 +21,7 @@ struct Assign: Tag {
 	
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		context.setValue(try variable.evaluate(context: context), named: variableName)
 		return []
 	}

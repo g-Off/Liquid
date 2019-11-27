@@ -30,7 +30,7 @@ class BlockBody {
 		try step(nil, nil)
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		var result: [String] = []
 		for node in nodes {
 			result.append(contentsOf: try node.render(context: context))

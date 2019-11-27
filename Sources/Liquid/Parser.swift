@@ -61,7 +61,3 @@ final class Parser {
 		return tokens[index].value ?? ""
 	}
 }
-
-public class ParseContext {
-	var tags: [String: TagBuilder] = [:]
-}

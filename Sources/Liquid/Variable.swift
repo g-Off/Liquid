@@ -59,7 +59,7 @@ struct Variable {
 		return (args, kwargs)
 	}
 	
-	func evaluate(context: Context) throws -> Value {
+	func evaluate(context: RenderContext) throws -> Value {
 		var value = expression.evaluate(context: context)
 		for filter in filters {
 			guard let filterFunc = context.filter(named: filter.name) else {
