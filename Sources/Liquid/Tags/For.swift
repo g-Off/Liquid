@@ -80,7 +80,7 @@ class For: Block, Tag {
 		}
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		let item: (Int) -> Value
 		var startIndex: Int
 		var endIndex: Int
@@ -159,7 +159,7 @@ private struct ForLoop {
 		return range.isEmpty
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		var output: [String] = []
 		
 		try context.withScope(Scope(mutable: false, values: ["forloop": Value(drop)])) {
@@ -180,7 +180,7 @@ private struct ForLoop {
 		return output
 	}
 	
-	private func renderItemAtIndex(_ index: Int, context: Context) throws -> [String] {
+	private func renderItemAtIndex(_ index: Int, context: RenderContext) throws -> [String] {
 		let value = item(index)
 		let scope = Scope(mutable: false, values: [variableName: value])
 		let results = try context.withScope(scope) {

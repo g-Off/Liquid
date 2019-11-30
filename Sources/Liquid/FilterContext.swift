@@ -11,7 +11,7 @@ public struct FilterContext {
 	public let encoder: Encoder
 	public let translations: [String: String]?
 	
-	init(context: Context) {
+	init(context: RenderContext) {
 		self.init(encoder: context.encoder, translations: context.translations)
 	}
 	

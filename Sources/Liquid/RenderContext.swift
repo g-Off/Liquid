@@ -1,31 +1,11 @@
 //
-//  Context.swift
+//  RenderContext.swift
 //  
 //
 //  Created by Geoffrey Foster on 2019-09-02.
 //
 
 import Foundation
-
-class Scope {
-	private var values: [String: Value]
-	let mutable: Bool
-	
-	init(mutable: Bool = true, values: [String: Value] = [:]) {
-		self.mutable = mutable
-		self.values = values
-	}
-	
-	subscript(key: String) -> Value? {
-		get {
-			return values[key]
-		}
-		set {
-			guard mutable else { return }
-			values[key] = newValue
-		}
-	}
-}
 
 public struct RegisterKey: Hashable {
 	public let rawValue: String
@@ -35,7 +15,7 @@ public struct RegisterKey: Hashable {
 	}
 }
 
-public final class Context {
+public final class RenderContext {
 	enum Interrupt {
 		case `break`
 		case `continue`
@@ -48,7 +28,7 @@ public final class Context {
 	
 	public let filters: [String: FilterFunc]
 	public let translations: [String: String]?
-	public let tags: [String: TagBuilder]
+	internal let tags: [String: TagBuilder]
 	public let environment: Environment
 	public let encoder: Encoder
 	public let fileSystem: FileSystem

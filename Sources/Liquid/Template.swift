@@ -21,39 +21,35 @@ public final class Template {
 	private let environment: Environment
 	
 	private let fileSystem: FileSystem
-	
-	private let translations: [String: String]?
-	
-	public convenience init(sourceURL: URL, encoder: Encoder = Encoder(), environment: Environment = Environment(), translations: [String: String]? = nil) throws {
+		
+	public convenience init(sourceURL: URL, encoder: Encoder = Encoder(), environment: Environment = Environment()) throws {
 		let source = try String(contentsOf: sourceURL)
 		let fileSystem = LocalFileSystem(baseURL: sourceURL.deletingLastPathComponent())
-		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment, translations: translations)
+		self.init(source: source, fileSystem: fileSystem, encoder: encoder, environment: environment)
 	}
 	
-	public convenience init(source: String, encoder: Encoder = Encoder(), environment: Environment = Environment(), fileSystem: FileSystem? = nil, translations: [String: String]? = nil) {
+	public convenience init(source: String, encoder: Encoder = Encoder(), environment: Environment = Environment(), fileSystem: FileSystem? = nil) {
 		struct ThrowingFileSystem: FileSystem {			
 			func read(path: String) throws -> String {
 				throw RuntimeError.reason("Invalid filesystem")
 			}
 		}
-		self.init(source: source, fileSystem: fileSystem ?? ThrowingFileSystem(), encoder: encoder, environment: environment, translations: translations)
+		self.init(source: source, fileSystem: fileSystem ?? ThrowingFileSystem(), encoder: encoder, environment: environment)
 	}
 	
-	init(source: String, context: Context) {
+	init(source: String, context: RenderContext) {
 		self.source = source
 		self.encoder = context.encoder
 		self.environment = context.environment
 		self.fileSystem = context.fileSystem
 		self.filters = context.filters
-		self.translations = context.translations
 		self.tags = context.tags
 	}
 	
-	private init(source: String, fileSystem: FileSystem, encoder: Encoder, environment: Environment, translations: [String: String]? = nil) {
+	private init(source: String, fileSystem: FileSystem, encoder: Encoder, environment: Environment) {
 		self.source = source
 		self.fileSystem = fileSystem
 		self.environment = environment
-		self.translations = translations
 		self.encoder = encoder
 		
 		tags["assign"] = Assign.init
@@ -87,20 +83,20 @@ public final class Template {
 		tags[name] = tag
 	}
 	
-	public func render(context: Context) throws -> String {
+	public func render(context: RenderContext) throws -> String {
 		return try root.render(context: context).joined()
 	}
 	
-	public func render(values: [String: Value] = [:]) throws -> String {
-		let context = Context(fileSystem: fileSystem, values: values, environment: environment, tags: tags, filters: filters, translations: translations, encoder: encoder)
+	public func render(values: [String: Value] = [:], translations: [String: String]? = nil) throws -> String {
+		let context = RenderContext(fileSystem: fileSystem, values: values, environment: environment, tags: tags, filters: filters, translations: translations, encoder: encoder)
 		return try render(context: context)
 	}
 	
-	public func render(values: [String: ValueConvertible]) throws -> String {
-		return try self.render(values: values.mapValues { try encoder.encode($0) })
+	public func render(values: [String: ValueConvertible], translations: [String: String]? = nil) throws -> String {
+		return try self.render(values: values.mapValues { try encoder.encode($0) }, translations: translations)
 	}
 	
-	public func render(values: [String: Any?]) throws -> String {
-		return try self.render(values: values.mapValues { try encoder.encode($0) })
+	public func render(values: [String: Any?], translations: [String: String]? = nil) throws -> String {
+		return try self.render(values: values.mapValues { try encoder.encode($0) }, translations: translations)
 	}
 }

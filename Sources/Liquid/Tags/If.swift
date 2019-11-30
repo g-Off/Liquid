@@ -68,7 +68,7 @@ final class If: Block, Tag {
 			self.rhs = nil
 		}
 		
-		func evaluate(context: Context) -> Bool {
+		func evaluate(context: RenderContext) -> Bool {
 			var result: Bool
 			if let `operator` = `operator`, let rhs = rhs {
 				let lhsValue = lhs.evaluate(context: context)
@@ -98,7 +98,7 @@ final class If: Block, Tag {
 			self.condition = condition
 		}
 		
-		func evaluate(context: Context) -> Bool {
+		func evaluate(context: RenderContext) -> Bool {
 			guard let condition = condition else { return true }
 			return condition.evaluate(context: context)
 		}
@@ -145,7 +145,7 @@ final class If: Block, Tag {
 		blocks.append(block)
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		if let block = blocks.first {
 			let result = block.evaluate(context: context)
 			if result && !inverted || !result && inverted {

@@ -23,7 +23,7 @@ class Capture: Block, Tag {
 		_ = try super.parse(body: body, tokenizer: tokenizer, context: context)
 	}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		let result = try body.render(context: context)
 		context.setValue(Value(result.joined()), named: variableName)
 		return []

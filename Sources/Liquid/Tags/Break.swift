@@ -11,7 +11,7 @@ struct Break: Tag {
 	init(name: String, markup: String?, context: ParseContext) throws {}
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
-	func render(context: Context) -> [String] {
+	func render(context: RenderContext) -> [String] {
 		context.push(interrupt: .break)
 		return []
 	}

@@ -63,11 +63,11 @@ struct Expression: CustomStringConvertible {
 		self.kind = .lookup(lookup)
 	}
 	
-	func evaluate(context: Context) -> Value {
+	func evaluate(context: RenderContext) -> Value {
 		return evaluate(context: context, data: nil)
 	}
 	
-	private func evaluate(context: Context, data: Value?) -> Value {
+	private func evaluate(context: RenderContext, data: Value?) -> Value {
 		var result: Value?
 		switch kind {
 		case let .lookup(expressions):

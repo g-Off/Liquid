@@ -38,7 +38,7 @@ final class Include: Tag {
 	
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
-	func render(context: Context) throws -> [String] {
+	func render(context: RenderContext) throws -> [String] {
 		var result: [String] = []
 		let templateName = self.templateName.evaluate(context: context).toString()
 		let template = try loadTemplate(path: templateName, context: context)
@@ -68,7 +68,7 @@ final class Include: Tag {
 		return result
 	}
 	
-	private func loadTemplate(path: String, context: Context) throws -> Template {
+	private func loadTemplate(path: String, context: RenderContext) throws -> Template {
 		guard !path.isEmpty else {
 			throw FileSystemError(reason: "")
 		}

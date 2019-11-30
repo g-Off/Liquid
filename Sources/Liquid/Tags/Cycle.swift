@@ -38,7 +38,7 @@ struct Cycle: Tag {
 	
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {}
 	
-	func render(context: Context) -> [String] {
+	func render(context: RenderContext) -> [String] {
 		let registerKey = RegisterKey(name)
 		let lookupKey = nameExpression?.evaluate(context: context).toString() ?? expressions.map { $0.description }.joined(separator: ", ")
 		var registration = (context[registerKey] as? [String: Int]) ?? [:]
