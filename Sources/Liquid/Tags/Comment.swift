@@ -7,16 +7,17 @@
 
 import Foundation
 
-struct Comment: Tag {
+class Comment: Block, Tag {
 	init(name: String, markup: String?, context: ParseContext) throws {
-		fatalError()
+		super.init(name: name)
 	}
 	
 	func parse(_ tokenizer: Tokenizer, context: ParseContext) throws {
-		fatalError()
+		let body = BlockBody()
+		_ = try super.parse(body: body, tokenizer: tokenizer, context: context)
 	}
 	
 	func render(context: RenderContext) -> [String] {
-		fatalError()
+		return []
 	}
 }
